@@ -28,17 +28,24 @@ def extract_interesting_interval(start_index: int, end_index:int, x: list, y1: l
 def main(file: Path):
     x, y1, y2 = read_data(file)
 
+    interesting_intervals = {
+        "Pl1": [extract_interesting_interval(0, 450, x, y1, y2)],
+        "Pl2": [extract_interesting_interval(2200, 2400, x, y1, y2)],
+        "Pl3": [extract_interesting_interval(4050, 4300, x, y1, y2)],
+        "Pl4": [extract_interesting_interval(10700, 11300, x, y1, y2)],
+        "Pl5": [extract_interesting_interval(12000, 12800, x, y1, y2)],
+        "Pl6": [extract_interesting_interval(13000, 14100, x, y1, y2)],
+        "Pl7": [extract_interesting_interval(14900, 15700, x, y1, y2)],
+    }
+
     intervalls = {}
     if args.all:
         intervalls.update({"All": [extract_interesting_interval(0, len(x), x, y1, y2)]})
     else:
-        intervalls.update({"Pl1": [extract_interesting_interval(0, 450, x, y1, y2)]})
-        intervalls.update({"Pl2": [extract_interesting_interval(12000, 12800, x, y1, y2)]})
+        intervalls.update(interesting_intervals)
     print(intervalls.keys())
     
     for key, value in intervalls.items():
-        # plt.plot(value[0], value[1], label="I0SH03")
-        # plt.plot(value[0], value[2], label="I0SH04")
         plt.plot(value[0][0], value[0][1], label="I0SH03")
         plt.plot(value[0][0], value[0][2], label="I0SH04")
         plt.xlabel('Time (intervalls)')
