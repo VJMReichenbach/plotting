@@ -4,7 +4,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import time
 
-def read_data(file: Path) -> list | list | list:
+def read_data(file):
     x = []
     y1 = []
     y2 = []
@@ -19,13 +19,13 @@ def read_data(file: Path) -> list | list | list:
             y2.append(float(lines[i].split()[6]))
     return x, y1, y2
 
-def extract_interesting_interval(start_index: int, end_index:int, x: list, y1: list, y2: list) -> list | list | list:
+def extract_interesting_interval(start_index, end_index, x, y1, y2):
     x = x[start_index:end_index]
     y1 = y1[start_index:end_index]
     y2 = y2[start_index:end_index]
     return x, y1, y2
 
-def main(file: Path):
+def main(file):
     x, y1, y2 = read_data(file)
 
     interesting_intervals = {
