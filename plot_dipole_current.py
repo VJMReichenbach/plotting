@@ -14,6 +14,8 @@ def read_data(file):
         for i in range(len(lines)):
             if i == 0:
                 continue
+            if i == 4050:
+                print(lines[i])
             x.append(i)
             y1.append(float(lines[i].split()[5]))
             y2.append(float(lines[i].split()[6]))

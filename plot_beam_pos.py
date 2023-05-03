@@ -49,6 +49,8 @@ def main(file: Path, niveau: int):
     ax2.set_title('Currents')
     ax2.legend()
 
+    # change title
+    fig.suptitle(f'File: {file.parts[-2]}')
     # show plot
     plt.show()
 
