@@ -4,8 +4,11 @@ fonttools
 kiwisolver
 matplotlib
 numpy
+opencv-python
 packaging
 Pillow
 pyparsing
 python-dateutil
+scipy
 six
+tqdm
