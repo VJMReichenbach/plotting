@@ -1,0 +1,13 @@
+- Warum Abfallen im Pos plot?
+
+
+TODO:
+- Gaus Parameter
+
+
+- I-Shift aus messungslog auslesen
+- X-Shift daraus berechnen
+- 1. X pos  nehmen
+-> 1_pos = x_pos - xCal(iShift) --> da wäre der Strahl ohne störung gewesen
+- für 2. und weiter
+-> 2_pos = 1_pos - xCal(iShift) --> So strahl pos über messung ohne regler
