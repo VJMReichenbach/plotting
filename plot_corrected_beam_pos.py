@@ -23,7 +23,7 @@ def delta_I_to_delta_x(delta_I: float):
     # y(I) = -0.210579 * I + 342.08
     # I(x) = -0.021836 * x + -8.97
     # I(y) = -4.748816 * y + -1624.48
-    return -45.796722 * delta_I + 410.90
+    return -45.796722 * delta_I
 
 def main(file: Path):
     time, current_pos, corrected_pos, current_shift, current_current, new_current = read_data(file)
@@ -39,19 +39,22 @@ def main(file: Path):
         # Skip the first one because it's the initial position
         if i == 0:
             continue
-        x_shift = delta_I_to_delta_x(current_shift[i])
-        not_controlled_pos.append(not_controlled_pos[i-1] + x_shift)
+        x_shift = delta_I_to_delta_x(current_shift[i]) #-1
+        not_controlled_pos.append(not_controlled_pos[i-1] - x_shift)
+        # not_controlled_pos.append(not_controlled_pos[i-1])
 
     # plot the not controlled position and the corrected position
     fig, (ax1, ax2) = plt.subplots(2, 1)
+    # ax1 plot niveau at 150
+    ax1.axhline(y=150, color='r', label='Niveau')
     ax1.plot(time, not_controlled_pos, label='Not controlled')
-    ax1.plot(time, corrected_pos, label='Corrected')
+    ax1.plot(time, corrected_pos, label='Controlled')
     ax1.set_ylabel('x (px)')
     ax1.legend()
-    ax2.plot(time, current_current, label='Current')
+    ax2.plot(time, current_shift, label='Current shift')
     ax2.plot(time, new_current, label='New current')
     ax2.set_ylabel('Current (A)')
-    ax2.set_xlabel('Time (ms)')
+    ax2.set_xlabel('Time (s)')
     ax2.legend()
     plt.show()
 

@@ -1,8 +1,8 @@
-- Warum Abfallen im Pos plot?
+- Warum Abfallen im Pos plot? (Answ: Gauss parameter falsch)
 
 
 TODO:
-- Gaus Parameter
+- Gaus Parameter (HELP???)
 
 
 - I-Shift aus messungslog auslesen

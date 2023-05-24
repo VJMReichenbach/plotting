@@ -42,6 +42,10 @@ def fitGaussian(xValues: list):
     # increased the maxfev value since the fit failed otherwise
     # TODO: parameter for gaus fit 
     popt, pcov = curve_fit(gaussian, x, xValues, p0=[1, 0, 1], maxfev=100000)
+    # PArameter:
+    # a = aplitude --> max value of array
+    # x0 = center --> position of max value
+    # sigma = width --> manuelly set
     xGauss = gaussian(x, *popt)
     return xGauss
 
