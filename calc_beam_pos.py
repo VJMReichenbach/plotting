@@ -41,15 +41,17 @@ def fitGaussian(xValues: list):
     x = np.arange(0, len(xValues), 1)
     # increased the maxfev value since the fit failed otherwise
     # TODO: parameter for gaus fit 
-    popt, pcov = curve_fit(gaussian, x, xValues, p0=[1, 0, 1], maxfev=100000)
-    # PArameter:
+    # Parameter:
     # a = aplitude --> max value of array
     # x0 = center --> position of max value
     # sigma = width --> manuelly set
+    a = max(xValues)
+    x0 = xValues.index(a)
+    popt, pcov = curve_fit(gaussian, x, xValues, p0=[a, x0, 10], maxfev=10000)
     xGauss = gaussian(x, *popt)
     return xGauss
 
-def main(folder: Path, background: Path, verbose: int, all: bool, threshold: int, output: Path):
+def main(folder: Path, background: Path, verbose: int, threshold: int, output: Path):
     time = []
     xValues = []
     yValues = []
@@ -62,57 +64,55 @@ def main(folder: Path, background: Path, verbose: int, all: bool, threshold: int
     bottom = 220 
 
     i = 0
-    with tqdm(total=len(list(folder.iterdir()))) as pbar:
-        for file in folder.iterdir():
-            # get time from filename
-            # filename format: 2023-02-23_15:55:52.50.jpg
-            t = file.name.split(".jpg")[0]
-            # convert to milliseconds via datetime
-            t = datetime.datetime.strptime(t, "%Y-%m-%d_%H:%M:%S.%f").timestamp() * 1000
-            time.append(t)
+    try:
+        with tqdm(total=len(list(folder.iterdir()))) as pbar:
+            for file in folder.iterdir():
+                # get time from filename
+                # filename format: 2023-02-23_15:55:52.50.jpg
+                t = file.name.split(".jpg")[0]
+                # convert to milliseconds via datetime
+                t = datetime.datetime.strptime(t, "%Y-%m-%d_%H:%M:%S.%f").timestamp() * 1000
+                time.append(t)
 
-            # load image
-            img = cv2.imread(str(file), cv2.IMREAD_GRAYSCALE)
-            # subtract background
-            img = cv2.subtract(img, background)
-            # crop margin
-            v, h = img.shape
-            img = img[top:v-bottom, left:h-right]
-            # median blur
-            img = cv2.medianBlur(img, 3)
+                # load image
+                img = cv2.imread(str(file), cv2.IMREAD_GRAYSCALE)
+                # subtract background
+                img = cv2.subtract(img, background)
+                # crop margin
+                v, h = img.shape
+                img = img[top:v-bottom, left:h-right]
+                # median blur
+                img = cv2.medianBlur(img, 3)
 
-            # get x and y values
-            x = getXValues(img, threshold)
-            y = getYValues(img, threshold)
+                # get x and y values
+                x = getXValues(img, threshold)
+                y = getYValues(img, threshold)
 
-            # fit gaussians
-            xGauss = fitGaussian(x)
-            yGauss = fitGaussian(y)
+                # fit gaussians
+                xGauss = fitGaussian(x)
+                yGauss = fitGaussian(y)
 
-            # get mean of gaussians
-            xMean = np.mean(xGauss)
-            yMean = np.mean(yGauss)
+                # get mean of gaussians
+                xMean = np.mean(xGauss)
+                yMean = np.mean(yGauss)
 
-            # append to list
-            xValues.append(xMean)
-            yValues.append(yMean)
+                # append to list
+                xValues.append(xMean)
+                yValues.append(yMean)
 
-            # update progress bar
-            pbar.update(1)
+                # update progress bar
+                pbar.update(1)
 
-            if verbose > 1:
-                print(f"{file.name}({t}): x={xMean}, y={yMean}")
+                if verbose > 1:
+                    print(f"{file.name}({t}): x={xMean}, y={yMean}")
 
-        if all:
-            # plot all values
-            plt.plot(time, xValues, label="x")
-            plt.plot(time, yValues, label="y")
-
-        # write values to csv file
-        with open(output, "w") as f:
-            f.write("time,x,y\n")
-            for i in range(len(time)):
-                f.write(f"{time[i]},{xValues[i]},{yValues[i]}\n")
+    except KeyboardInterrupt:
+        pass
+    # write values to csv file
+    with open(output, "w") as f:
+        f.write("time,x,y\n")
+        for i in range(len(time)):
+            f.write(f"{time[i]},{xValues[i]},{yValues[i]}\n")
 
 
 if __name__ == '__main__':
@@ -120,7 +120,6 @@ if __name__ == '__main__':
     parser.add_argument('folder', type=Path, help='Input folder')
     parser.add_argument('background', type=Path, help='Background image')
     parser.add_argument('-v', '--verbose', action='count', default=0, help='Verbosity level')
-    parser.add_argument('-a', '--all', action='store_true', help='Show plot the entire file')
     parser.add_argument('-t', '--threshold', type=int, default=20, help='Threshold for the light intensity')
     parser.add_argument('-o', '--output', type=Path, default="output.csv", help='Output file')
     args = parser.parse_args()
@@ -137,4 +136,4 @@ if __name__ == '__main__':
         print(f"The given output file \"{args.output}\" is already a file.")
         exit(1)
 
-    main(folder=args.folder, background=args.background, verbose=args.verbose, all=args.all, threshold=args.threshold, output=args.output)
+    main(folder=args.folder, background=args.background, verbose=args.verbose, threshold=args.threshold, output=args.output)
