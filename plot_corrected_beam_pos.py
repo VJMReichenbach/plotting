@@ -58,6 +58,8 @@ def main(file: Path):
     ax2.legend()
     plt.show()
 
+    #TODO: Stadessen unterer plot: current vom regelnden und störenden steerer
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Plot beam pos with and without controller')
     parser.add_argument('file', type=Path, help='Path to file')
