@@ -43,22 +43,36 @@ def main(file: Path):
         not_controlled_pos.append(not_controlled_pos[i-1] - x_shift)
         # not_controlled_pos.append(not_controlled_pos[i-1])
 
-    # plot the not controlled position and the corrected position
-    fig, (ax1, ax2) = plt.subplots(2, 1)
-    # ax1 plot niveau at 150
-    ax1.axhline(y=150, color='r', label='Niveau')
-    ax1.plot(time, not_controlled_pos, label='Not controlled')
-    ax1.plot(time, corrected_pos, label='Controlled')
-    ax1.set_ylabel('x (px)')
-    ax1.legend()
-    ax2.plot(time, current_shift, label='Current shift')
-    ax2.plot(time, new_current, label='New current')
-    ax2.set_ylabel('Current (A)')
-    ax2.set_xlabel('Time (s)')
-    ax2.legend()
-    plt.show()
+    # Einzelner plot vllt besser? Strom von I0SH03 Schwierig zu bekommen    
 
-    #TODO: Stadessen unterer plot: current vom regelnden und störenden steerer
+    # # plot the not controlled position and the corrected position
+    # fig, (ax1, ax2) = plt.subplots(2, 1)
+
+    # # plot 1: Niveau, not controlled pos, controlled pos
+    # # ax1 plot niveau at 150
+    # ax1.axhline(y=150, color='r', label='Niveau')
+    # ax1.plot(time, not_controlled_pos, label='Not controlled')
+    # ax1.plot(time, corrected_pos, label='Controlled')
+    # ax1.set_ylabel('x (px)')
+    # ax1.legend()
+
+
+    # #TODO: Stadessen unterer plot: current vom regelnden und störenden steerer
+    # # plot 2: current shift, current current, new current
+    # ax2.plot(time, current_current, label='Current I0SH04')
+    # # TODO: Woher I0SH03?
+    # ax2.set_ylabel('Current (A)')
+    # ax2.set_xlabel('Time (s)')
+    # ax2.legend()
+
+    plt.axhline(y=150, color='r', label='Niveau')
+    plt.plot(time, not_controlled_pos, label='Not Controlled')
+    plt.plot(time, corrected_pos, label='Controlled')
+    plt.ylabel('x (px)')
+    plt.xlabel('Time (s)')
+    plt.legend()
+
+    plt.show()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Plot beam pos with and without controller')
