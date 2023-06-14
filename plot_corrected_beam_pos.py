@@ -26,6 +26,7 @@ def delta_I_to_delta_x(delta_I: float):
     return -45.796722 * delta_I
 
 def main(file: Path):
+    # TODO: Wenn Current auf 2.0 A -> nicht den Shift draufrechnen
     time, current_pos, corrected_pos, current_shift, current_current, new_current = read_data(file)
 
     not_controlled_pos = []
