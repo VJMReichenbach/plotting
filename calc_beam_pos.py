@@ -40,7 +40,6 @@ def fitGaussian(xValues: list):
     """Fits a gaussian to the data and returns the fit curve"""
     x = np.arange(0, len(xValues), 1)
     # increased the maxfev value since the fit failed otherwise
-    # TODO: parameter for gaus fit 
     # Parameter:
     # a = aplitude --> max value of array
     # x0 = center --> position of max value
