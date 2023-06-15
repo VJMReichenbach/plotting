@@ -25,7 +25,7 @@ def delta_I_to_delta_x(delta_I: float):
     # I(y) = -4.748816 * y + -1624.48
     return -45.796722 * delta_I
 
-def main(file: Path):
+def main(file: Path, cut: bool, begin: int , end: int):
     # TODO: Wenn Current auf 2.0 A -> nicht den Shift draufrechnen
     time, current_pos, corrected_pos, current_shift, current_current, new_current = read_data(file)
 
@@ -40,22 +40,27 @@ def main(file: Path):
         # Skip the first one because it's the initial position
         if i == 0:
             continue
-        x_shift = delta_I_to_delta_x(current_shift[i]) #-1
+        # If the current is +- 2.0 A, the shift is not added
+        if abs(current_current[i]) == 2.0:
+            x_shift = 0
+        else:
+            x_shift = delta_I_to_delta_x(current_shift[i]) #-1
         not_controlled_pos.append(not_controlled_pos[i-1] - x_shift)
-        # not_controlled_pos.append(not_controlled_pos[i-1])
 
-    # Einzelner plot vllt besser? Strom von I0SH03 Schwierig zu bekommen    
+    # print length after calculation and cut if necessary
+    if cut:
+        print(f'Length of the controlled position: {len(corrected_pos[begin:end])}')
+        print(f'Length of the not controlled position: {len(not_controlled_pos[begin:end])}')
+        corrected_pos = corrected_pos[begin:end]
+        not_controlled_pos = not_controlled_pos[begin:end]
+        time = time[begin:end]
+    print(f'Maximum of the controlled position: {max(corrected_pos)}')
+    print(f'Maximum of the not controlled position: {max(not_controlled_pos)}')
+    print(f'Minimum of the controlled position: {min(corrected_pos)}')
+    print(f'Minimum of the not controlled position: {min(not_controlled_pos)}')
+    print(f'Average of the controlled position: {sum(corrected_pos)/len(corrected_pos)}')
+    print(f'Average of the not controlled position: {sum(not_controlled_pos)/len(not_controlled_pos)}')
 
-    # # plot the not controlled position and the corrected position
-    # fig, (ax1, ax2) = plt.subplots(2, 1)
-
-    # # plot 1: Niveau, not controlled pos, controlled pos
-    # # ax1 plot niveau at 150
-    # ax1.axhline(y=150, color='r', label='Niveau')
-    # ax1.plot(time, not_controlled_pos, label='Not controlled')
-    # ax1.plot(time, corrected_pos, label='Controlled')
-    # ax1.set_ylabel('x (px)')
-    # ax1.legend()
 
 
     # #TODO: Stadessen unterer plot: current vom regelnden und störenden steerer
@@ -78,6 +83,9 @@ def main(file: Path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Plot beam pos with and without controller')
     parser.add_argument('file', type=Path, help='Path to file')
+    parser.add_argument('--cut', action='store_true', help='Cut the data with the specified beginning and end')
+    parser.add_argument('--begin', type=int, help='Beginning of the window to cut the data')
+    parser.add_argument('--end', type=int, help='End of the window to cut the data')
     args = parser.parse_args()
 
-    main(args.file)
+    main(args.file, args.cut, args.begin, args.end)
