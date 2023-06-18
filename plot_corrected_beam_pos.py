@@ -30,6 +30,8 @@ def main(file: Path, cut: bool, begin: int , end: int):
     time, current_pos, corrected_pos, current_shift, current_current, new_current = read_data(file)
 
     not_controlled_pos = []
+    niveau_diviation_controlled = []
+    niveau_diviation_not_controlled = []
 
     # The first position is the initial position and is not controlled
     first_pos = current_pos[0]
@@ -41,11 +43,27 @@ def main(file: Path, cut: bool, begin: int , end: int):
         if i == 0:
             continue
         # If the current is +- 2.0 A, the shift is not added
+        # TODO: Check dass shift + current nicht größer als 2.0 ist
         if abs(current_current[i]) == 2.0:
-            x_shift = 0
+            x_shift = 0 
+        elif current_current[i] + current_shift[i] > 2.0:
+            x_shift = delta_I_to_delta_x(2.0 - current_current[i])
+        elif current_current[i] + current_shift[i] < -2.0:
+            x_shift = delta_I_to_delta_x(-2.0 - current_current[i])
         else:
             x_shift = delta_I_to_delta_x(current_shift[i]) #-1
         not_controlled_pos.append(not_controlled_pos[i-1] - x_shift)
+        niveau_diviation_not_controlled.append(abs(150 - not_controlled_pos[i]))
+        niveau_diviation_controlled.append(abs(150 - corrected_pos[i]))
+        print(f'Current: {current_current[i]}')
+        print(f'Shift: {current_shift[i]}')
+        print(f'x_shift: {x_shift}')
+        print(f'Not controlled pos: {not_controlled_pos[i]}')
+        print(f'Controlled pos: {corrected_pos[i]}')
+        print(f'Niveau diviation not controlled: {niveau_diviation_not_controlled[i-1]}')
+        print(f'Niveau diviation controlled: {niveau_diviation_controlled[i-1]}')
+        print('')
+
 
     # print length after calculation and cut if necessary
     if cut:
@@ -54,12 +72,17 @@ def main(file: Path, cut: bool, begin: int , end: int):
         corrected_pos = corrected_pos[begin:end]
         not_controlled_pos = not_controlled_pos[begin:end]
         time = time[begin:end]
+    
+    # TODO: durschnittliche abweichung vom niveau für beide
+    # TODO: Für den einregelnden fall auch für den schon eingeregelten fall
     print(f'Maximum of the controlled position: {max(corrected_pos)}')
     print(f'Maximum of the not controlled position: {max(not_controlled_pos)}')
     print(f'Minimum of the controlled position: {min(corrected_pos)}')
     print(f'Minimum of the not controlled position: {min(not_controlled_pos)}')
     print(f'Average of the controlled position: {sum(corrected_pos)/len(corrected_pos)}')
     print(f'Average of the not controlled position: {sum(not_controlled_pos)/len(not_controlled_pos)}')
+    print(f'Average of the controlled position diviation from niveau: {sum(niveau_diviation_controlled)/len(niveau_diviation_controlled)}')
+    print(f'Average of the not controlled position diviation from niveau: {sum(niveau_diviation_not_controlled)/len(niveau_diviation_not_controlled)}')
 
 
 
