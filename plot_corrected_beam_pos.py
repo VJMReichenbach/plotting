@@ -55,15 +55,6 @@ def main(file: Path, cut: bool, begin: int , end: int):
         not_controlled_pos.append(not_controlled_pos[i-1] + x_shift)
         niveau_diviation_not_controlled.append(abs(niveau - not_controlled_pos[i]))
         niveau_diviation_controlled.append(abs(niveau - corrected_pos[i]))
-        # print(f'Current: {current_current[i]}')
-        # print(f'Shift: {current_shift[i]}')
-        # print(f'x_shift: {x_shift}')
-        # print(f'Not controlled pos: {not_controlled_pos[i]}')
-        # print(f'Controlled pos: {corrected_pos[i]}')
-        # print(f'Niveau diviation not controlled: {niveau_diviation_not_controlled[i-1]}')
-        # print(f'Niveau diviation controlled: {niveau_diviation_controlled[i-1]}')
-        # print('')
-
 
     # print length after calculation and cut if necessary
     if cut:
