@@ -31,12 +31,12 @@ def main(file):
     x, y1, y2 = read_data(file)
 
     interesting_intervals = {
-        "Test Mixnoise": [extract_interesting_interval(0, 450, x, y1, y2)],
-        "Egal": [extract_interesting_interval(2200, 2400, x, y1, y2)],
-        "TODO: Mehr hieraus": [extract_interesting_interval(4050, 4300, x, y1, y2)],
-        "Sinus Messung 1 (Amplitude = 1)": [extract_interesting_interval(10700, 11300, x, y1, y2)],
-        "Sinus Messung 2 (Amplitude = 2)": [extract_interesting_interval(12000, 12800, x, y1, y2)],
-        "Normalverteilung Messung": [extract_interesting_interval(13000, 14100, x, y1, y2)],
+        # "Test Mixnoise": [extract_interesting_interval(0, 450, x, y1, y2)],
+        # "Egal": [extract_interesting_interval(2200, 2400, x, y1, y2)],
+        # "TODO: Mehr hieraus": [extract_interesting_interval(4050, 4300, x, y1, y2)],
+        # "Sinus Messung 1 (Amplitude = 1)": [extract_interesting_interval(10700, 11300, x, y1, y2)],
+        # "Sinus Messung 2 (Amplitude = 2)": [extract_interesting_interval(12000, 12800, x, y1, y2)],
+        # "Normalverteilung Messung": [extract_interesting_interval(13000, 14100, x, y1, y2)],
         "Mix Messung": [extract_interesting_interval(14900, 15700, x, y1, y2)],
     }
 
@@ -46,8 +46,20 @@ def main(file):
     else:
         intervalls.update(interesting_intervals)
     print(intervalls.keys())
-    
-    for key, value in intervalls.items():
+
+
+    if args.dump:
+        for key, value in intervalls.items():
+            with open("dump.csv", "w") as f:
+                f.write("time,noise,regelung\n")
+        
+                print(value[0][0])
+                for t in range(len(value[0][0])):
+                    f.write(str(t) + "," + str(value[0][1][t]) + "," + str(value[0][2][t]) + "\n")
+                f.close()
+
+
+
         plt.plot(value[0][0], value[0][1], label="I0SH03 (Noise)")
         plt.plot(value[0][0], value[0][2], label="I0SH04 (Regelung)")
         plt.xlabel('Time (intervalls)')
@@ -61,5 +73,6 @@ if __name__ == '__main__':
     parser.add_argument('file', type=Path, help='Input file')
     parser.add_argument('-v', '--verbose', action='count', default=0, help='Verbosity level')
     parser.add_argument('-a', '--all', action='store_true', help='Show plot the entire file')
+    parser.add_argument('--dump', action='store_true', help='Dump specific data')
     args = parser.parse_args()
     main(file=args.file)

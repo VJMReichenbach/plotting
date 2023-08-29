@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path
 import matplotlib.pyplot as plt
+import csv
 
 def read_data(file: Path):
     time, current_pos, corrected_pos, current_shift, current_current, new_current = [], [], [], [], [], []
@@ -88,11 +89,26 @@ def main(file: Path, cut: bool, begin: int , end: int):
     print(f'Average of the not controlled position diviation from niveau: {avg_niveau_diviation_not_controlled}')
 
 
+    if (args.dump == True):
+        with open("dump.csv", 'w') as f:
+            f.write("time,corrected_pos,not_controlled_pos\n")
+        
+            for i in range(len(time)):
+                f.write(str(time[i]))
+                f.write(",")
+                f.write(str(corrected_pos[i]))
+                f.write(",")
+                f.write(str(not_controlled_pos[i]))
+                f.write("\n")
+
+            f.close()
+    
+    plt.title("Strahlposition")
     plt.axhline(y=niveau, color='r', label='Niveau')
-    plt.plot(time, not_controlled_pos, label='Not Controlled')
-    plt.plot(time, corrected_pos, label='Controlled')
-    plt.ylabel('x (px)')
-    plt.xlabel('Time (s)')
+    plt.plot(time, not_controlled_pos, label='Ungeregelte Strahlposition')
+    plt.plot(time, corrected_pos, label='Geregelte Strahlposition')
+    plt.ylabel('Horizontale Strahlposition x in Pixel')
+    plt.xlabel('Zeit t in s')
     plt.legend()
 
     plt.show()
@@ -103,6 +119,7 @@ if __name__ == '__main__':
     parser.add_argument('--cut', action='store_true', help='Cut the data with the specified beginning and end')
     parser.add_argument('--begin', type=int, help='Beginning of the window to cut the data')
     parser.add_argument('--end', type=int, help='End of the window to cut the data')
+    parser.add_argument('--dump', action='store_true', help='Dump the calculated positions in a .csv file')
     args = parser.parse_args()
 
     main(args.file, args.cut, args.begin, args.end)
