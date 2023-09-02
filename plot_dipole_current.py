@@ -34,10 +34,10 @@ def main(file):
         # "Test Mixnoise": [extract_interesting_interval(0, 450, x, y1, y2)],
         # "Egal": [extract_interesting_interval(2200, 2400, x, y1, y2)],
         # "TODO: Mehr hieraus": [extract_interesting_interval(4050, 4300, x, y1, y2)],
-        # "Sinus Messung 1 (Amplitude = 1)": [extract_interesting_interval(10700, 11300, x, y1, y2)],
-        # "Sinus Messung 2 (Amplitude = 2)": [extract_interesting_interval(12000, 12800, x, y1, y2)],
-        # "Normalverteilung Messung": [extract_interesting_interval(13000, 14100, x, y1, y2)],
-        "Mix Messung": [extract_interesting_interval(14900, 15700, x, y1, y2)],
+        "Sinus Messung 1 (Amplitude = 1)": [extract_interesting_interval(10700, 11300, x, y1, y2)],
+        "Sinus Messung 2 (Amplitude = 2)": [extract_interesting_interval(12000, 12800, x, y1, y2)],
+        # "Normalverteilung Messung": [extract_interesting_interval(13400, 14100, x, y1, y2)],
+        # "Mix Messung": [extract_interesting_interval(14900, 15700, x, y1, y2)],
     }
 
     intervalls = {}
@@ -48,8 +48,8 @@ def main(file):
     print(intervalls.keys())
 
 
-    if args.dump:
-        for key, value in intervalls.items():
+    for key, value in intervalls.items():
+        if args.dump:
             with open("dump.csv", "w") as f:
                 f.write("time,noise,regelung\n")
         
@@ -60,11 +60,12 @@ def main(file):
 
 
 
-        plt.plot(value[0][0], value[0][1], label="I0SH03 (Noise)")
-        plt.plot(value[0][0], value[0][2], label="I0SH04 (Regelung)")
-        plt.xlabel('Time (intervalls)')
-        plt.ylabel('Dipole current (A)')
-        plt.title(f'{key}')
+        plt.plot(value[0][0], value[0][1], label="Magnet I0SH03 (Sörung)", color="#cc0000")
+        plt.plot(value[0][0], value[0][2], label="Magnet I0SH04 (Regelung)", color="g")
+        plt.xlabel('Zeit t in Intervallen')
+        plt.ylabel('Strom der Dipole I in A')
+        # plt.title(f'{key}')
+        plt.title("Dipolstrom")
         plt.legend()
         plt.show()
 

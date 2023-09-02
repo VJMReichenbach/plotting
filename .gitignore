@@ -133,3 +133,5 @@ dmypy.json
 /test_data
 real_output
 test_output
+
+dump.csv
