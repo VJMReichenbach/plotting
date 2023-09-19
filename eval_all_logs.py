@@ -31,7 +31,7 @@ def mean(liste):
 #
 #	main
 
-measurements = ["data/log_mix.txt","data/log_normal.txt","data/log_sin_1A.txt","data/log_sin_2A.txt"]
+measurements = ["data/log_no_noise.txt", "data/log_mix.txt","data/log_normal.txt","data/log_sin_1A.txt","data/log_sin_2A.txt"]
 
 for measurement in range(len(measurements)):
 
@@ -82,11 +82,15 @@ for measurement in range(len(measurements)):
 
     # 	Plots
 
+    avg_pos_controlled = mean(pos)
+    avg_pos_uncontrolled = mean(pos_uncontr)
     sigma_interval_min = (mean(pos)-2*std_pos)
     sigma_interval_max = (mean(pos)+2*std_pos)
     print(f"Measurment: {measurement}")
-    print(f"$2\, \sigma$ Abweichung min: {sigma_interval_min}")
-    print(f"$2\, \sigma$ Abweichung max: {sigma_interval_max}")
+    print(f"Durschnitt Kontrolliert: {avg_pos_controlled}")
+    print(f"Durschnitt unkontrolliert: {avg_pos_uncontrolled}")
+    print(f"Standard Abweichung kontrolliert: {std_pos}")
+    print(f"Standard Abweichung unkontrolliert: {std_pos_uncontr}")
     print()
 
     fig, axs = plt.subplots(1, 1, sharex=True,dpi=300)
@@ -96,7 +100,9 @@ for measurement in range(len(measurements)):
     plt.plot(time,pos,label="Geregelter Strahlverlauf")
     plt.plot(time,pos_uncontr,label="Ungeregelter Strahlverlauf")
     axs.hlines(0,min(time),max(time),color="black",label="Sollwert")
-    axs.fill_between(x, sigma_interval_min, sigma_interval_max, color='blue', alpha=.1,label="$2\, \sigma$ Abweichung")
+
+    if measurement != 0:
+        axs.fill_between(x, sigma_interval_min, sigma_interval_max, color='blue', alpha=.1,label="$2\, \sigma$ Abweichung")
     #axs.fill_between(x, (mean(pos_uncontr)-1*std_pos_uncontr), (mean(pos_uncontr)+1*std_pos_uncontr), color='gray', alpha=.1,label="$1\, \sigma$ interval")
     plt.legend()
     plt.savefig(measurements[measurement].replace("log_","").replace(".txt","") + ".png",dpi=300)
