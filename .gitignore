@@ -135,3 +135,5 @@ real_output
 test_output
 
 dump.csv
+/data
+/.vscode
