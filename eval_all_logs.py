@@ -66,6 +66,7 @@ for measurement in range(len(measurements)):
         last_pos = pos[i]
         last_cur = cur[i]
 
+    # TODO: nochmal selbst machen?
     #	Calibration pixel -> mm
     a = 20/216
     b = -150*20/216
