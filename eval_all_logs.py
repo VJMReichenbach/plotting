@@ -31,7 +31,8 @@ def mean(liste):
 #
 #	main
 
-measurements = ["data/log_no_noise.txt", "data/log_mix.txt","data/log_normal.txt","data/log_sin_1A.txt","data/log_sin_2A.txt"]
+# measurements = ["data/log_no_noise.txt", "data/log_mix.txt","data/log_normal.txt","data/log_sin_1A.txt","data/log_sin_2A.txt"]
+measurements = ["data/log_no_noise.txt"]
 
 for measurement in range(len(measurements)):
 
@@ -61,7 +62,7 @@ for measurement in range(len(measurements)):
         shifts_pos.append(shift_pos)
         shifts_cur.append(shift_cur)
         shifts_pos_uncontr.append(shift_pos_uncontr)
-        pos_uncontr.append(pos_uncontr[i-1] + shift_pos_uncontr)
+        pos_uncontr.append(pos_uncontr[i-1] - shift_pos_uncontr+shift_pos)
         
         last_pos = pos[i]
         last_cur = cur[i]
