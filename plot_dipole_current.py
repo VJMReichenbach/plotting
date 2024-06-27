@@ -36,8 +36,8 @@ def main(file):
         # "TODO: Mehr hieraus": [extract_interesting_interval(4050, 4300, x, y1, y2)],
         "Sinus Messung 1 (Amplitude = 1)": [extract_interesting_interval(10700, 11300, x, y1, y2)],
         "Sinus Messung 2 (Amplitude = 2)": [extract_interesting_interval(12000, 12800, x, y1, y2)],
-        # "Normalverteilung Messung": [extract_interesting_interval(13400, 14100, x, y1, y2)],
-        # "Mix Messung": [extract_interesting_interval(14900, 15700, x, y1, y2)],
+        "Normalverteilung Messung": [extract_interesting_interval(13400, 14100, x, y1, y2)],
+        "Mix Messung": [extract_interesting_interval(14900, 15700, x, y1, y2)],
     }
 
     intervalls = {}
@@ -60,13 +60,14 @@ def main(file):
 
 
 
-        plt.plot(value[0][0], value[0][1], label="Magnet I0SH03 (Sörung)", color="#cc0000")
-        plt.plot(value[0][0], value[0][2], label="Magnet I0SH04 (Regelung)", color="g")
+        plt.plot(value[0][0], value[0][1], label="Magnet I0SH03 (Sörung)", color="darkblue")
+        plt.plot(value[0][0], value[0][2], label="Magnet I0SH04 (Regelung)", color="darkviolet")
         plt.xlabel('Zeit t in Intervallen')
         plt.ylabel('Strom der Dipole I in A')
         # plt.title(f'{key}')
-        plt.title("Dipolstrom")
+        # plt.title("Dipolstrom")
         plt.legend()
+        plt.savefig(key)
         plt.show()
 
 if __name__ == '__main__':
